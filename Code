@@ -1,0 +1,457 @@
+<!-- <!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  Hello world
+  <script src="script.js"></script> <body> 
+  
+  <!--
+  This script places a badge on your repl's full-browser view back to your repl's cover
+  page. Try various colors for the theme: dark, light, red, orange, yellow, lime, green,
+  teal, blue, blurple, magenta, pink!
+  -->
+  <!-- <script src="https://replit.com/public/js/replit-badge-v2.js" theme="dark" position="bottom-right"></script>
+</body>
+
+</html> --> 
+
+<!DOCTYPE html>
+<html lang="en">    
+  <head>  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Update the title so it changes with the selected mode. -->
+    <title> Maximize Productivity with Structure </title>
+    <style>
+      #timer {
+          color: white;
+          text-align: center;
+          font-size: 7em;
+          font-weight: bold;
+          font-family: cursive;
+          padding-bottom: 0.5cm;
+          padding-top: 0.5cm;
+      }
+      .buttons {
+          padding-top: 1em;
+      }
+      .startbutton {
+        height:1cm;
+        width:2cm;
+        color: black;
+        font-weight: normal;
+        font-family: cursive;
+        border-radius: 25px;
+        background-color: rgba(119,221,119,1);
+        border-color: green;
+        border-width: 3px;
+        
+      }
+      .startbutton:hover {
+        background-color: rgba(119,221,119,.5);
+        font-weight: bold;
+      }
+      .restartbutton {
+        height:1cm;
+        width:2cm;
+        color: black;
+        font-weight: normal;
+        font-family: cursive;
+        border-radius: 25px;
+        background-color: rgba(253, 253, 150,1);
+        border-color: yellow;
+        border-width: 3px;
+      }
+      .restartbutton:hover {
+        background-color: rgba(253, 253, 150,.5);
+        font-weight: bold;
+      }
+      
+      
+      #main {
+          color: blue;
+          text-align: center;
+          font-style: normal;
+          font-family: cursive;
+          
+      }
+      
+      .container {
+          text-align: center;
+          position: relative;
+          padding-bottom: 1em;
+      }
+      body {
+        transform: scale(1.25); /* Scale everything within the body by 25% */
+      }
+      
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #FF6961; /*Pastel red*/
+        transition: background-color .75s ease-in-out;
+      }
+      
+      .button {
+        width: 100px;
+        height: 30px;
+        color: white;
+        
+        background-color: transparent;
+        font-family: cursive;
+        border-radius: 2px;
+        border-color: white;
+        border-width: 1.75px;
+        
+        
+      }
+      
+      .button:hover {
+        background-color: rgba(167, 199, 231,1);
+        transition: background-color .5s ease-in-out;
+        cursor: pointer; 
+        color: black;
+      }
+      .square-container {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: -1;
+      }
+      .square {
+          background-color: rgba(0, 0, 0,.05);
+          border-radius: 10px;
+          padding-bottom: 15px;
+          height: 300px;
+          width: 481px;
+      }
+
+
+      /* Optimize the style of the settings menu*.button*/ 
+      
+      .settings_container {
+        
+        margin-top: 1px;  
+      }
+      #settingsList {
+         /* Initially hide the settings list */
+        display: none;
+        list-style-type: none;
+        padding: 0;
+      }
+      .settingsItem {
+        padding-bottom: 1em;;
+        margin-top: 10px;
+      }
+      #settingsButton {
+        position: absolute;
+        top: -50px;
+      }
+      
+    </style>
+  </head>
+  <body> 
+    
+    <!-- <h2 id = main> Select a mode <br> to get started.</h2> -->
+    <!-- optimize the html of the settings list - see if the div container is necessary -->
+    <div class="settings_container">
+    <ul id= "settingsList">
+      <li class = "settingsItem"> Background Color: </li>
+      <li class = "settingsItem"> Timer Color: </li>
+    </ul>
+    </div>
+
+    
+    <button class = "button" id = "settingsButton"> Settings</button>
+    
+    <div class = "buttons">
+    <button class = "button" id = "pomodoro"> Pomodoro </button>
+    <button class = "button" id = "short_break"> Short Break </button>
+    <button class = "button" id = "long_break"> Long Break </button>
+    </div>
+
+    
+
+    
+    
+    <div class="square-container">
+      <div class="square"></div> <!-- Add the square within this container -->
+    </div>
+    
+    <div class = "container">
+    <div id = timer> 25:00 </div>
+    
+    <button class = "startbutton" id = startbutton>Start</button> 
+    <button class = "restartbutton" id = restartbutton>Restart</button> 
+    <!-- <img src = "restart.png" id = "restartbutton" alt = "restart"> -->
+    </div>
+    
+    
+    <!---------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------->
+    <!---------------------------------------------------------------------------------->
+    <!-- Javascript  -->
+      <script>
+        
+        // Since you can manipulate global variables, declare countdownInterval here so pause timer function can access it.
+        
+        //----------------------------------------------------->
+        // Variables
+        // ----------------------------------------------------->
+        var start_button = document.getElementById("startbutton");
+        var restart_button = document.getElementById("restartbutton");
+        var pomodoro_button = document.getElementById("pomodoro");
+        var short_break_button = document.getElementById("short_break");
+        var long_break_button = document.getElementById("long_break");
+        var settings_button = document.getElementById("settingsButton")
+        var timer = document.getElementById("timer");
+        var timer_is_active = false;
+        var pomodoro_active = true;
+        var short_break_active = false;
+        var long_break_active = false;
+        var timer_paused = false;
+        
+
+        pomodoro_button.style.backgroundColor = "rgba(31, 81, 255,1)"
+        pomodoro_button.style.color = "white"
+        pomodoro_button.style.fontWeight = "bold"
+        var countdownDuration = 25 * 60 - 1 ;
+        var countdownInterval;
+        
+        // Calculate minutes and seconds
+        var minutes = Math.floor(countdownDuration / 60);
+        var seconds = countdownDuration % 60;
+        // Set the timer variable to the timer
+        var timerDisplay = document.getElementById('timer');
+        //----------------------------------------------------->
+        // Functions
+        //----------------------------------------------------->
+        
+        //---Function to start the timer---//
+        function startTimer() {
+          console.log(countdownDuration)
+          start_button.textContent = "Pause";
+          // button.style.backgroundColor = "red"
+            timer_is_active = true
+            timer_paused = false
+            console.log("Timer started");
+            // Start the interval
+            // Update the timer display every second
+            countdownInterval = setInterval(function() {
+              console.log(countdownDuration)
+                minutes = Math.floor(countdownDuration / 60);
+                seconds = countdownDuration % 60;
+                // Display the formatted time
+                timerDisplay.textContent = (minutes < 10 ? '0' : '') + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+                // Decrement the countdown duration
+                countdownDuration--;
+                // Check if the countdown has reached zero
+                if (countdownDuration < 0) {
+                    timer_not_active = true;
+                    clearInterval(countdownInterval); // Stop the countdown when it reaches zero
+                    timerDisplay.textContent = '00:00'; // Optionally update the display to show 00:00 when countdown ends
+                    alert('Countdown finished!'); // Optionally, trigger some action when the countdown ends      
+                } 
+            }, 1000); // Update every 1000 milliseconds (1 second)
+        }
+        //---Function to restart the timer ---//
+        function restartTimer() {
+          if(timer_is_active && pomodoro_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 25 * 60 - 1
+            timerDisplay.textContent = "25:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }else if(timer_paused && pomodoro_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 25 * 60 - 1
+            timerDisplay.textContent = "25:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }else if(timer_is_active && short_break_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 5 * 60 - 1
+            timerDisplay.textContent = "05:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }else if(timer_paused && short_break_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 5 * 60 - 1
+            timerDisplay.textContent = "05:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }else if(timer_is_active && long_break_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 15 * 60 - 1
+            timerDisplay.textContent = "15:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }else if(timer_paused && long_break_active) {
+            console.log("Timer restarted!")
+            countdownDuration = 15 * 60 - 1
+            timerDisplay.textContent = "15:00";
+            start_button.textContent = "Start";
+            timer_is_active = false;
+            clearInterval(countdownInterval)
+          }
+        }
+        //---Function to pause the timer---//
+        function pauseTimer() {
+          start_button.textContent = "Start";
+          // button.style.backgroundColor = "green";
+          console.log("Timer paused")
+          clearInterval(countdownInterval)
+          timer_is_active = false;
+          timer_paused = true
+        }
+        //---Function to handle the timer---//
+        function handleTimer() {
+          if(timer_is_active) {
+            pauseTimer()
+          }else{
+            startTimer()
+          } 
+        }
+
+        function highlight_selected_button(selected_button,reset_button_one,reset_button_two) {
+          selected_button.style.backgroundColor ='rgba(31, 81, 255,1)' /*Gray*/
+          selected_button.style.color = "white"
+          selected_button.style.fontWeight = "bold"
+
+          reset_button_one.style.backgroundColor = "transparent"
+          reset_button_one.style.color = "white"
+          reset_button_one.style.fontWeight = "normal"
+          
+          reset_button_two.style.backgroundColor = "transparent"
+          reset_button_two.style.color = "white"
+          reset_button_two.style.fontWeight = "normal"
+
+          
+        }
+        //----------------------------------------------------->
+
+
+
+
+
+
+
+
+
+
+        
+        // There is a bug where you have to click the start button twice when selecting the mode while the timer is active ** patched **
+
+
+
+
+
+
+
+
+        
+        // Modes
+        //----------------------------------------------------->
+        //---Pomodoro Mode---//
+        function to_pomodoro() {
+          pomodoro_active = true
+          short_break_active = false
+          long_break_active = false
+          
+          if(timer_is_active) {
+            clearInterval(countdownInterval)
+            console.log("Timer restarted!")
+            timer_is_active = false
+          }
+          console.log("pomodoro button clicked!")
+          countdownDuration = 25 * 60 - 1
+          console.log(countdownDuration)
+          timerDisplay.textContent = "25:00"
+          start_button.textContent = "Start"
+          document.documentElement.style.backgroundColor = "#FF6961"; // Pastel Red
+            highlight_selected_button(pomodoro_button, short_break_button, long_break_button);
+        }
+        //---Short Break Mode---//
+        function to_short_break() {
+          short_break_active = true
+          long_break_active = false
+          pomodoro_active = false
+          if(timer_is_active) { 
+            clearInterval(countdownInterval)
+            console.log("Timer restarted!")
+            timer_is_active = false
+          }
+          console.log("short_break button clicked!")
+          countdownDuration = 5 * 60 - 1
+          console.log(countdownDuration)
+          timerDisplay.textContent = "05:00"
+          start_button.textContent = "Start"
+          document.documentElement.style.backgroundColor = "#AEC6CF"; // Pastel Blue
+
+           highlight_selected_button(short_break_button, pomodoro_button, long_break_button);
+        }
+        //---Long Break Mode---//
+        function to_long_break() {
+          long_break_active = true
+          pomodoro_active = false
+          short_break_active = false
+    
+          if(timer_is_active) {
+            clearInterval(countdownInterval)
+            console.log("Timer restarted!")
+            timer_is_active = false
+          }
+          console.log("long_break button clicked!")
+          countdownDuration = 15 * 60 - 1
+          console.log(countdownDuration)
+          timerDisplay.textContent = "15:00"
+          start_button.textContent = "Start"
+          document.documentElement.style.backgroundColor = "#ffbe98"; // Peach fuzz
+
+          highlight_selected_button(long_break_button, short_break_button, pomodoro_button);
+        }
+      // ---------------------------------------------------->
+      // Settings Toggle
+      // ---------------------------------------------------->
+      //---Long Break Mode---//
+        function toggleSettings() {
+          if(document.getElementById("settingsList").style.display == "none" || document.getElementById("settingsList").style.display == "") {
+            document.getElementById("settingsList").style.display = "block"
+            console.log("settings activated!")
+          }else {
+            document.getElementById("settingsList").style.display = "none"
+            console.log("settings deactivated")
+          }
+        }
+        
+      // Event Listeners 
+      //----------------------------------------------------->
+      start_button.addEventListener("click", handleTimer)
+      restart_button.addEventListener("click", restartTimer)
+      pomodoro_button.addEventListener("click", to_pomodoro)
+      short_break_button.addEventListener("click", to_short_break)
+      long_break_button.addEventListener("click", to_long_break)
+      settings_button.addEventListener("click", toggleSettings)
+      //----------------------------------------------------->
+        
+        
+      </script>
+  </body>
+</html>
